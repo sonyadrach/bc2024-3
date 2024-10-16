@@ -22,12 +22,22 @@ if (!fs.existsSync(options.input)) {
 const r_data = fs.readFileSync(options.input, "utf8");
 const data = JSON.parse(r_data);
 
-if (options.display) {
-    console.log(data);
-}
+if (data && Array.isArray(data)) {  
+    const filteredData = data.filter(item => item.parent === "BS3_BanksLiab");
 
-if (options.output) {
-    fs.writeFileSync(options.output, JSON.stringify(data, null, 2));
-    console.log(`Result written to ${options.output}`);
+    if (filteredData.length === 0) {
+        console.log("No data found for parent: BS3_BanksLiab");
+    } else {
+  
+        const result = filteredData.map(item => `${item.txten}:${item.value}`).join('\n');
+
+    if (options.display) {
+        console.log(result);
+    }
+
+    if (options.output) {
+        fs.writeFileSync(options.output, result);
+        console.log(`Result written to ${options.output}`);
+    }
 }
-console.log("Does`t work :`( ");
+}
